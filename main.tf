@@ -21,7 +21,7 @@ resource "azurerm_resource_policy_assignment" "resource_policy_assignments" {
   }
 
   dynamic "non_compliance_message" {
-    for_each = each.value.non_compliance_message != null ? [each.value.non_compliance_message] : []
+    for_each = each.value.non_compliance_message != null ? each.value.non_compliance_message : []
     content {
       content                        = non_compliance_message.value.content
       policy_definition_reference_id = non_compliance_message.value.policy_definition_reference_id
@@ -29,10 +29,10 @@ resource "azurerm_resource_policy_assignment" "resource_policy_assignments" {
   }
 
   dynamic "overrides" {
-    for_each = each.value.overrides != null ? [each.value.overrides] : []
+    for_each = each.value.overrides != null ? each.value.overrides : []
     content {
       dynamic "selectors" {
-        for_each = overrides.value.selectors != null ? [overrides.value.selectors] : []
+        for_each = overrides.value.selectors != null ? overrides.value.selectors : []
         content {
           in     = selectors.value.in
           kind   = selectors.value.kind
@@ -44,13 +44,16 @@ resource "azurerm_resource_policy_assignment" "resource_policy_assignments" {
   }
 
   dynamic "resource_selectors" {
-    for_each = each.value.resource_selectors != null ? [each.value.resource_selectors] : []
+    for_each = each.value.resource_selectors != null ? each.value.resource_selectors : []
     content {
       name = resource_selectors.value.name
-      selectors {
-        in     = resource_selectors.value.selectors.in
-        kind   = resource_selectors.value.selectors.kind
-        not_in = resource_selectors.value.selectors.not_in
+      dynamic "selectors" {
+        for_each = resource_selectors.value.selectors
+        content {
+          in     = selectors.value.in
+          kind   = selectors.value.kind
+          not_in = selectors.value.not_in
+        }
       }
     }
   }

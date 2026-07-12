@@ -48,26 +48,26 @@ EOT
       identity_ids = optional(set(string))
       type         = string
     }))
-    non_compliance_message = optional(object({
+    non_compliance_message = optional(list(object({
       content                        = string
       policy_definition_reference_id = optional(string)
-    }))
-    overrides = optional(object({
-      selectors = optional(object({
+    })))
+    overrides = optional(list(object({
+      selectors = optional(list(object({
         in     = optional(list(string))
         kind   = optional(string) # Default: "policyDefinitionReferenceId"
         not_in = optional(list(string))
-      }))
+      })))
       value = string
-    }))
-    resource_selectors = optional(object({
+    })))
+    resource_selectors = optional(list(object({
       name = optional(string)
-      selectors = object({
+      selectors = list(object({
         in     = optional(list(string))
         kind   = string
         not_in = optional(list(string))
-      })
-    }))
+      }))
+    })))
   }))
 }
 
