@@ -39,7 +39,7 @@ EOT
     resource_id          = string
     description          = optional(string)
     display_name         = optional(string)
-    enforce              = optional(bool) # Default: true
+    enforce              = optional(bool)
     location             = optional(string)
     metadata             = optional(string)
     not_scopes           = optional(list(string))
@@ -55,7 +55,7 @@ EOT
     overrides = optional(list(object({
       selectors = optional(list(object({
         in     = optional(list(string))
-        kind   = optional(string) # Default: "policyDefinitionReferenceId"
+        kind   = optional(string)
         not_in = optional(list(string))
       })))
       value = string
@@ -69,5 +69,13 @@ EOT
       }))
     })))
   }))
+  validation {
+    condition = alltrue([
+      for k, v in var.resource_policy_assignments : (
+        v.resource_selectors == null || alltrue([for item in v.resource_selectors : (length(item.selectors) >= 1)])
+      )
+    ])
+    error_message = "Each selectors list must contain at least 1 items"
+  }
 }
 
